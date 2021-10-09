@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Drag and Drop Quiz</title>
+
+  
+
+  <style>
+     <link rel='stylesheet prefetch' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'> 
+    
+    
+
+.quiz-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 1100px;
+  height: 450px;
+}
+.quiz-wrapper p.question-description {
+  background: #FFFFFF;
+  color: #FFFFFF;
+  
+}
+.quiz-wrapper ul.options {
+    position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 700px;
+  list-style: none;
+  border: 1px solid #008080;
+  text-align: center;
+  padding: 0;
+  margin: 5;
+}
+.quiz-wrapper ul.options li {
+  border: 1px solid transparent;
+  padding: 6px 8px;
+}
+.quiz-wrapper ul.options li.title {
+  background: #008080;
+  color: white;
+}
+.quiz-wrapper ul.options li.option {
+    display:inline;
+  
+  position: relative;
+  z-index: 50;
+  font-size: 15px;
+}
+.quiz-wrapper .answers {
+  display: inline-block;
+  width: 700px;
+  font-size: 15px;
+  line-height: 20px;
+}
+.quiz-wrapper .answers .target {
+  display: inline-block;
+  width: 110px;
+  background-image: linear-gradient(white, WhiteSmoke);
+  margin: 0 3px;
+  text-align: center;
+}
+.quiz-wrapper button[type="submit"] {
+  
+  margin: 20px 40px 40px 40px;
+  padding: 10px;
+  background: #008080;
+  border: none;
+  color: white;
+  font-size: 18px;
+}
+.lightbox-bg {
+  display: none;
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+.status {
+  display: none;
+  position: absolute;
+  z-index: 110;
+  text-align: center;
+  width: 80%;
+  top: 220px;
+  left: 47px;
+}
+.status p {
+  background: white;
+  padding: 30px;
+}
+
+  </style>
+  
+      
+
+  
+</head>
+
+<body>
+
+    
+<div class="quiz-wrapper">
+    <div class="row2">
+    <p class="question-description"></p>
+    <ul class="options">
+        <li class="title">Options</li>
+        <li class="option" data-target="choice1">tennene</li>
+        <li class="option" data-target="choice2">dag</li>
+        <li class="option" data-target="choice3">ei brodskive</li>
+        <li class="option" data-target="choice6">Katten</li>
+        <li class="option" data-target="choice5">en kopp</li>
+        <li class="option" data-target="choice4">en dusj</li>
+        <li class="option" data-target="choice7">venner</li>
+        <li class="option" data-target="choice8">lekser</li>
+        <li class="option" data-target="choice9">læreren</li>
+        <li class="option" data-target="choice10">huset</li>
+        <li class="option" data-target="choice11">jobb</li>
+    </ul>
+
+</div>
+<div class="row1">
+<div class="answers">
+    <ol>
+        Jeg våkner kl 7 hver <span class="target" data-accept="choice2">&nbsp;</span>&nbsp;.&nbsp;Jeg pusser<span class="target" data-accept="choice1">&nbsp;</span>
+        og tar <span class="target" data-accept="choice4">&nbsp;</span> kaffe.Så lager jeg frokost.Jeg spiser<span class="target" data-accept="choice3">&nbsp;</span> og drikker<span class="target" data-accept="choice5">&nbsp;</span>
+        Jeg har en katt.<span class="target" data-accept="choice6">&nbsp;</span>heter Sissi.Mandag og Onsdag går jeg på norskkur.Jeg liker <span class="target" data-accept="choice9">&nbsp;</span>
+        og lærer mye.Læreren heter Erlend.Jeg har også mange <span class="target" data-accept="choice7">&nbsp;</span> på norskkurset. De heter Pierre,Yiru, og James. James har <span class="target" data-accept="choice11">&nbsp;</span>
+        men Pierre,Yiru og jeg jobber ikke.Men det går bra med meg.Jeg har mye å gjøre.Jeg går på treningssenteret,treffer venner,lager mat,går på tur,rydder<span class="target" data-accept="choice10">&nbsp;</span>
+        gjør <span class="target" data-accept="choice8">&nbsp;</span> og handler mat. Sissi og jeg liker Trondheim.
+    </ol>
+</div>
+</div>
+<div class="row3">
+ <button type="submit" value="submit">Submit</button></div>
+
+ <div class="lightbox-bg"></div>
+ <div class="status confirm">
+   <p>All Answers Answered</p>
+ </div>
+ <div class="status deny">
+   <p>Answers Remain</p>
+ 
+</div>
+</div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js'></script>
+
+  
+
+    <script>
+ $(document).ready( function() {
+  //initialize the quiz options
+  var answersLeft = [];
+  $('.quiz-wrapper').find('li.option').each( function(i) {
+    var $this = $(this);
+    var answerValue = $this.data('target');
+    var $target = $('.answers .target[data-accept="'+answerValue+'"]');
+    var labelText = $this.html();
+    $this.draggable( {
+      revert: "invalid",
+      containment: ".quiz-wrapper"
+    });
+   
+    if ( $target.length > 0 ) {
+    $target.droppable( {
+        accept: 'li.option[data-target="'+answerValue+'"]',
+        drop: function( event, ui ) {
+          $this.draggable('destroy');
+          $target.droppable('destroy');
+          $this.html('&nbsp;');
+          $target.html(labelText);
+          answersLeft.splice( answersLeft.indexOf( answerValue ), 1 );
+        }
+    });
+    answersLeft.push(answerValue);
+    } else { }
+   });
+   $('.quiz-wrapper button[type="submit"]').click( function() {
+       if ( answersLeft.length > 0 ) {
+            $('.lightbox-bg').show();
+      $('.status.deny').show();
+      $('.lightbox-bg').click( function() {
+              $('.lightbox-bg').hide();
+        $('.status.deny').hide();
+        $('.lightbox-bg').unbind('click');
+      });
+       } else {
+            $('.lightbox-bg').show();
+      $('.status.confirm').show();
+       }
+   });
+});
+
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
